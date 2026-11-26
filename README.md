@@ -27,7 +27,7 @@ Section 3 (collisions)
   resonance.py           Table 1 (correlations about the centres -1, 7, -5, 1 at n = 15);
                          T_n(h), |h| >= 2, stabilization, and T_17(1) = 0.73001 (beginning of Section 3.1).
   full_tables_energy.py  Q_n for n <= 17 (Table 2, Q_17 = 0.47182, Q_1 = 2/3, Q_2 = 10/21);
-                         M_n for n <= 17; energy on the major arcs E_n and the ratios E_n/E_{n-1} (Section 12).
+                         M_n for n <= 17; energy on the major arcs E_n and the ratios E_n/E_{n-1} (Section 13).
   collisions_23.py       Table 2 (Q_n and D_n(1), n <= 13).
   certificate_float.py   Theorem 3.15 / Remark 3.17: certificates at levels m = 1..4, Lambda_m and h(2,1).
                          Usage: python3 certificate_float.py m A iterations, e.g. 2 60 400 (saves cw_h_m2.npy).
@@ -94,30 +94,71 @@ Section 11 (archimedean part of the front)
                          max_m e^{0.6 m}|c'_m| = 0.22, 0.068, 0.036, 0.027 for n = 30, 40, 50, 60, compared with
                          max_m e^{0.549 m}|phi_m(1)| = 1.34 for the true central values.
                          Usage: python3 conspiracy_cost.py
-  archimedean_part.py    Section 12, paragraph "The archimedean part": B_n of Lemma 9.6 for n <= 6000,
+  archimedean_part.py    Section 13, paragraph "The archimedean part": B_n of Lemma 9.6 for n <= 6000,
                          n^{3/2} e^{rho n} max|B_n| = 0.0241, ..., 0.0233 and the peak position 6.96, ..., 6.78;
-                         the value e^{rho n} max|B_n| = 1.65e-5 at n = 150 (Section 12).
+                         the value e^{rho n} max|B_n| = 1.65e-5 at n = 150 (Section 13).
                          Usage: python3 archimedean_part.py 6000
-  pairing_B.py           Section 12: floating-point approximations S_N of the conserved pairing P^B
+  pairing_B.py           Section 13: floating-point approximations S_N of the conserved pairing P^B
                          (|S_N| = 0.1039, ..., 0.0860 for N = 200, ..., 3200). Usage: python3 pairing_B.py 3200
-  window_major_arcs.py   The comparison value e^{rho n} M_n = 2.28e-3 at n = 150 (Section 12).
+  window_major_arcs.py   The comparison value e^{rho n} M_n = 2.28e-3 at n = 150 (Section 13).
 
-Section 12 (computation and conjectures)
-  phi_tables.c           Theorem 12.1: full tables on all units for n <= 18 (M_n and the maxima).
+Section 12 (central values, full pairing, local structure)
+  fixp.py                [rigorous] Fixed-point complex arithmetic with P fractional bits, 64 guard bits and the
+                         proved error model of Appendix A (products < sqrt2 u, phases e(-r/3^m) < 77u). Module only.
+  central_rig.py         [rigorous] Theorem 12.2(a): enclosures of phi_m(1), 1 <= m <= 1200, by Lemma 12.1(a) with
+                         truncation L = 8N+400 and two error channels (rounding, truncation); relative radius < 2^-152,
+                         phi_m(1) != 0, max e^{0.55m}|phi_m(1)| <= 11.366 and max e^{0.545m}|phi_m(1)| <= 5.904 (m = 131),
+                         e^{sigma_c m}|phi_m(1)| <= 3.8e-6 for 600 <= m <= 1200.
+                         Usage: python3 central_rig.py 1200 1150 > crig1200.txt  (long run)
+  line_rig.py            [rigorous] Theorem 12.2(b): line function psi_n(j), 0 <= j <= nx+12 sqrt n+60, and the front
+                         B_n by Lemma 12.1(d); M_n >= 0.61 n^{-3/2} e^{-rho n} (n <= 1200) and >= 3.86 n^{-3/2} e^{-rho n}
+                         (100 <= n <= 1200). Usage: python3 line_rig.py 1200 320 > line1200.txt
+  line_rig2.py           [rigorous] As line_rig.py, with sum_j (-s_j)_+ V_n(j), sum_j |V_n(j)| and the tail bounds for
+                         Lemma 12.5(b). Usage: python3 line_rig2.py 420 480 > l420.txt
+  nondeg.py              [rigorous] Theorem 12.2(c) and Theorem 12.8: |P_400| >= 506.57 - 132.98 = 373.59, the tail
+                         over 400 <= m <= 1200 (<= 1.06), and the admissible constants C_0 for the hypothesis of
+                         Theorem 12.8 (C_0 <= 2.4e4 for sigma = 0.55, C_0 <= 37 for sigma = 0.545).
+                         Usage: python3 nondeg.py l420.txt 400 crig1200.txt
+  crig1200.txt, line1200.txt, l420.txt   Outputs of the three runs above.
+  central_fast.py, central_mp.py, central_stats.py   Non-rigorous versions of central_rig.py (double precision and
+                         fixed point without error channels); decay rates 0.554-0.564 and the bursts of Remark 12.3.
+                         Usage: python3 central_stats.py N P
+  halfline_stats.py      Remark 12.3: median of 3^m |f_m(t)|^2 on the half-line (e^{-13.4} at m = 400).
+                         Usage: python3 halfline_stats.py 400
+  pathrep_check.py       Lemma 12.9 checked by enumeration of all paths for n <= 4 (differences < 1e-15).
+                         Usage: python3 pathrep_check.py
+  lltest.py              Remark 12.13: n^{3/2} e^{rho n} max|B_n| = 0.02411, 0.02336, 0.02325 (n = 1000, 5000, 10000),
+                         the ratios W^(m)/B at s = -3, -7, -15 and the normalized maximum of the full line function
+                         (3.9, 9.6, 24.2 for n = 1e2, 1e3, 1e4); reads crig1200.txt. Usage: python3 lltest.py 10000 1000
+  lltest_S.py            Remark 12.13: ratios of the approximate pairings S^(m)/S^B (-2.723-3.907i for m = 1).
+                         Usage: python3 lltest_S.py 10000 1000
+  scaling_check.py       Remark 12.13: diffusive constant (predicted -0.0146-0.0725i, measured -0.0154-0.0713i at
+                         n = 8000, u = -1). Usage: python3 scaling_check.py 2000 8000
+  tails_check.py         Remark 12.13: tails (2.2e-2, 1.8e-3, 4.4e-5 for A = 2, 3, 4 at n = 2000) and the mass to the
+                         right of the line (2e-15). Usage: python3 tails_check.py 2000
+  right_exc.py           Numerics after Theorem 12.19: parts above the line near I decay like e^{-0.56t}.
+                         Usage: python3 right_exc.py 777 256 5 3
+  farright_rows.py       Numerics after Theorem 12.19: row sums of the restricted evolution from t = 0, rates
+                         0.548-0.557 for T <= 192 at m = 400 and 900. Usage: python3 farright_rows.py 400 192
+  ur_uniform.py          Numerics after Theorem 12.19: worst rate over starting points t0 <= 15 (0.534 at T = 96,
+                         m = 300; 0.551 at T = 192, m = 600). Usage: python3 ur_uniform.py 300 96
+
+Section 13 (computation and conjectures)
+  phi_tables.c           Theorem 13.1: full tables on all units for n <= 18 (M_n and the maxima).
                          Compile: gcc -O2 -o phi_tables phi_tables.c -lm ; run: ./phi_tables 18
-  window_major_arcs.py   Theorem 12.1 and Table 3 (M_n and nx - k_n for n <= 150).
+  window_major_arcs.py   Theorem 13.1 and Table 3 (M_n and nx - k_n for n <= 150).
                          Usage: python3 window_major_arcs.py 150
   window_large_n.py      Table 4 (G_n, n G_n and nx - k_n up to n = 50000) and the interval [6.266, 7.292]
                          of the peak shift for 1000 <= n <= 50000 (long run).
   window_edge_check.py   Appendix A: independence of the values of the position of the left edge.
   window_profile.py      Table 5, first row (profile |G_20000(nx+s)|/max).
   window_reservoir_cut.py  Table 6 (n^{3/2} e^{rho n} M_n with and without the part s < -120 removed at n = 600).
-  window_tilted_profile.py  Section 12: the distant reservoir of V_n near s = -230.
+  window_tilted_profile.py  Section 13: the distant reservoir of V_n near s = -230.
   general_pq_window.py   Table 7 and the peak shift interval [4.06, 5.07] for (3,4); agreement for left edges
                          -150, -300, -600 (Usage: python3 general_pq_window.py p q n0 NMAX J0 [v],
                          e.g. 3 4 10 12000 -150).
   full_tables_energy.py  Energy ratios E_n/E_{n-1} = 0.704, ..., 0.786 for n = 11, ..., 17.
-  quartic_energy.py      Proposition 12.4: ratios F_n/F_{n-1} = 0.412, 0.452, 0.479, 0.533 for n = 6, 10, 12, 15
+  quartic_energy.py      Proposition 13.4: ratios F_n/F_{n-1} = 0.412, 0.452, 0.479, 0.533 for n = 6, 10, 12, 15
                          and the inequalities M_n^4 <= F_n <= Q_n M_n^2 for n <= 15. Usage: python3 quartic_energy.py
   conjecture_H_check.py  Table 8 (Conjecture 5.2 with sigma = (1/2) ln 3 up to m = 400) and the fitted rates
                          0.559 (maximum) and 0.561 (root mean square). Usage: python3 conjecture_H_check.py 400 -3000
